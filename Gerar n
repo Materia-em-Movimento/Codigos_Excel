@@ -1,0 +1,43 @@
+Sub GerarNumeroAleatorio()
+    Dim rng As Range
+    Dim valorInferior As Double
+    Dim valorSuperior As Double
+    Dim resultado As Double
+    Dim cell As Range
+    
+    ' Verifica se há células selecionadas
+    If Not Selection Is Nothing Then
+        ' Verifica se há pelo menos uma célula vazia na seleção
+        Dim emptyCellFound As Boolean
+        emptyCellFound = False
+        
+        For Each cell In Selection
+            If IsEmpty(cell) Then
+                emptyCellFound = True
+                Exit For
+            End If
+        Next cell
+        
+        If emptyCellFound Then
+            ' Determina os valores inferior e superior
+            valorInferior = WorksheetFunction.Min(Selection)
+            valorSuperior = WorksheetFunction.Max(Selection)
+            
+            ' Loop sobre as células na seleção
+            For Each cell In Selection
+                ' Verifica se a célula está vazia
+                If IsEmpty(cell) Then
+                    ' Gera um número aleatório com 4 casas decimais
+                    Randomize
+                    resultado = Round((valorSuperior - valorInferior) * Rnd + valorInferior, 4)
+                    ' Insere o número aleatório na célula vazia
+                    cell.Value = resultado
+                End If
+            Next cell
+        Else
+            MsgBox "Nenhuma célula vazia selecionada.", vbExclamation
+        End If
+    Else
+        MsgBox "Nenhuma célula selecionada.", vbExclamation
+    End If
+End Sub
