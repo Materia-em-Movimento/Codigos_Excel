@@ -1,0 +1,29 @@
+Sub CorrigirValoresComEquacaoDaReta()
+    Dim inclinacao As Double
+    Dim intercepcao As Double
+    Dim valorCorrigido As Double
+    Dim ultimaCelulaH As Range
+    Dim cell As Range
+    
+    ' Calcular a inclinação e a interceptação da reta
+    inclinacao = WorksheetFunction.Slope(Range("R4:R8"), Range("Q4:Q8"))
+    intercepcao = WorksheetFunction.Intercept(Range("R4:R8"), Range("Q4:Q8"))
+    
+    ' Definir a última célula na coluna H
+    Set ultimaCelulaH = Cells(Rows.Count, "H").End(xlUp).Offset(1, 0)
+    
+    ' Verificar se algo está selecionado
+    If Not Selection Is Nothing Then
+        ' Corrigir cada valor presente em cada célula do range selecionado
+        For Each cell In Selection
+            ' Aplicar a equação da reta para corrigir o valor
+            valorCorrigido = inclinacao * cell.Value + intercepcao
+            ' Colar o valor corrigido na última célula da coluna H
+            ultimaCelulaH.Value = Round(valorCorrigido, 4)
+            ' Atualizar a referência para a última célula na coluna H
+            Set ultimaCelulaH = ultimaCelulaH.Offset(1, 0)
+        Next cell
+    Else
+        MsgBox "Nenhum intervalo selecionado.", vbExclamation
+    End If
+End Sub
