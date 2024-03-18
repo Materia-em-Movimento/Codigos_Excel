@@ -1,0 +1,76 @@
+Sub VerificarETranspor()
+
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+    Application.EnableEvents = False
+
+    Dim ws As Worksheet
+    Dim valorMax As Long
+    Dim linhaDesigual As Long
+    Dim dataAtual As Date
+    
+    ' Definir a planilha onde os dados estão localizados
+    Set ws = ThisWorkbook.Sheets("Planilha1") ' Substitua "Planilha1" pelo nome da sua planilha
+    
+    ' Passo 1: Verificar se as células E3 a E15 são iguais às células H3 a H15 (Coluna dos LOTES)
+    Dim celE As Range
+    Dim celH As Range
+    Dim linhasIguais As Boolean
+    
+    linhasIguais = True
+    
+    'Compara com H
+    For linha = 3 To 15
+        Set celE = ws.Range("E" & linha)
+        Set celH = ws.Range("H" & linha)
+        
+        If celE.Value <> celH.Value Then
+            linhasIguais = False
+            Exit For
+        End If
+    Next linha
+    
+    ' Passo 2: Se forem iguais, exibir mensagem e sair da macro
+    If linhasIguais Then
+        MsgBox "NADA MUDOU"
+        Exit Sub
+    End If
+    
+    ' Passo 3: Encontrar o maior valor na coluna B e adicionar 1 (Coluna da contagem)
+    valorMax = Application.WorksheetFunction.Max(ws.Range("B3:B15")) + 1
+    
+    ' Passo 4: Encontrar a linha que contém o valor desigual e atualizar o valor na coluna B
+    For linha = 3 To 15
+        If ws.Range("E" & linha).Value <> ws.Range("H" & linha).Value Then
+            linhaDesigual = linha
+            ws.Range("B" & linhaDesigual).Value = valorMax
+            Exit For
+        End If
+    Next linha
+    
+    ' Passo 5: Copiar valores de E3 a E15 e colar em H3 a H15, respectivamente
+    For linha = 3 To 15
+        ws.Range("E" & linha).Copy Destination:=ws.Range("H" & linha)
+    Next linha
+    
+    ' Passo 6: Classificar do menor para o maior no filtro da tabela
+    ws.ListObjects(1).Sort.SortFields.Clear
+    ws.ListObjects(1).Sort.SortFields.Add2 Key:=ws.Range("B2"), _
+        SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+    With ws.ListObjects(1).Sort
+        .Header = xlYes
+        .MatchCase = False
+        .Orientation = xlTopToBottom
+        .SortMethod = xlPinYin
+        .Apply
+    End With
+    
+    ' Passo 7: Colocar a data atual na célula correspondente na coluna D (Coluna das datas)
+    ws.Range("D15").Value = Date
+    
+    ' Limpar variáveis e reativar as configurações
+    Application.ScreenUpdating = True
+    Application.Calculation = xlCalculationAutomatic
+    Application.EnableEvents = True
+
+End Sub
