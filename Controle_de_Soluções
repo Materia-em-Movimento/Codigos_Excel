@@ -1,76 +1,73 @@
-Sub VerificarETranspor()
-
-    Application.ScreenUpdating = False
-    Application.Calculation = xlCalculationManual
-    Application.EnableEvents = False
-
-    Dim ws As Worksheet
-    Dim valorMax As Long
-    Dim linhaDesigual As Long
-    Dim dataAtual As Date
+Sub InserirDataEMaiorValor()
+    Dim rng As Range
+    Dim cel As Range
+    Dim maiorValor As Long
+    Dim novaData As Date
+    Dim i As Integer
     
-    ' Definir a planilha onde os dados estão localizados
-    Set ws = ThisWorkbook.Sheets("Planilha1") ' Substitua "Planilha1" pelo nome da sua planilha
-    
-    ' Passo 1: Verificar se as células E3 a E15 são iguais às células H3 a H15 (Coluna dos LOTES)
-    Dim celE As Range
-    Dim celH As Range
-    Dim linhasIguais As Boolean
-    
-    linhasIguais = True
-    
-    'Compara com H
-    For linha = 3 To 15
-        Set celE = ws.Range("E" & linha)
-        Set celH = ws.Range("H" & linha)
-        
-        If celE.Value <> celH.Value Then
-            linhasIguais = False
-            Exit For
+    ' Verifica se há uma seleção
+    If Selection.Count > 0 Then
+        ' Verifica se a seleção está na coluna E
+        If Not Intersect(Selection, Columns("E")) Is Nothing Then
+            ' Armazena a seleção na variável rng
+            Set rng = Selection
+            
+            ' Insere a data atual em todas as células selecionadas
+            For Each cel In rng
+                cel.Value = Date
+            Next cel
+            
+            ' Encontra o maior valor na coluna A
+            maiorValor = Application.WorksheetFunction.Max(Columns("A"))
+            
+            ' Adiciona 1 ao maior valor encontrado
+            maiorValor = maiorValor + 1
+            
+            ' Atribui o maior valor + índice para cada célula na seleção
+            For Each cel In rng
+                cel.Offset(0, -4).Value = maiorValor
+                maiorValor = maiorValor + 1
+            Next cel
+            
+            Call ClassificarDoMenorParaOMaior
+            
+        Else
+            MsgBox "EPA. TÁ FORA DA COLUNA DE DATAS CAMPEÃO..."
         End If
-    Next linha
-    
-    ' Passo 2: Se forem iguais, exibir mensagem e sair da macro
-    If linhasIguais Then
-        MsgBox "NADA MUDOU"
-        Exit Sub
+    Else
+        MsgBox "Nenhuma célula selecionada!"
     End If
     
-    ' Passo 3: Encontrar o maior valor na coluna B e adicionar 1 (Coluna da contagem)
-    valorMax = Application.WorksheetFunction.Max(ws.Range("B3:B15")) + 1
+    MsgBox "GRAVADO!"
     
-    ' Passo 4: Encontrar a linha que contém o valor desigual e atualizar o valor na coluna B
-    For linha = 3 To 15
-        If ws.Range("E" & linha).Value <> ws.Range("H" & linha).Value Then
-            linhaDesigual = linha
-            ws.Range("B" & linhaDesigual).Value = valorMax
-            Exit For
-        End If
-    Next linha
-    
-    ' Passo 5: Copiar valores de E3 a E15 e colar em H3 a H15, respectivamente
-    For linha = 3 To 15
-        ws.Range("E" & linha).Copy Destination:=ws.Range("H" & linha)
-    Next linha
-    
-    ' Passo 6: Classificar do menor para o maior no filtro da tabela
-    ws.ListObjects(1).Sort.SortFields.Clear
-    ws.ListObjects(1).Sort.SortFields.Add2 Key:=ws.Range("B2"), _
-        SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
-    With ws.ListObjects(1).Sort
-        .Header = xlYes
-        .MatchCase = False
-        .Orientation = xlTopToBottom
-        .SortMethod = xlPinYin
-        .Apply
-    End With
-    
-    ' Passo 7: Colocar a data atual na célula correspondente na coluna D (Coluna das datas)
-    ws.Range("D15").Value = Date
-    
-    ' Limpar variáveis e reativar as configurações
-    Application.ScreenUpdating = True
-    Application.Calculation = xlCalculationAutomatic
-    Application.EnableEvents = True
+End Sub
 
+
+Sub ClassificarDoMenorParaOMaior()
+    Dim ws As Worksheet
+    Dim tbl As ListObject
+    Dim rngSort As Range
+    
+    ' Define a planilha atual
+    Set ws = ThisWorkbook.Sheets("Planilha2") ' Substitua "Planilha1" pelo nome da sua planilha
+    
+    ' Verifica se a tabela existe na planilha
+    If ws.ListObjects.Count > 0 Then
+        ' Define a tabela
+        Set tbl = ws.ListObjects(1) ' Supondo que haja apenas uma tabela na planilha
+        
+        ' Define a faixa de ordenação para a coluna A da tabela (excluindo o cabeçalho)
+        Set rngSort = tbl.DataBodyRange.Columns(1)
+        
+        ' Classifica do menor para o maior
+        With tbl.Sort
+            .SortFields.Clear
+            .SortFields.Add Key:=rngSort, SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+            .Header = xlYes ' Se o cabeçalho for considerado na classificação
+            .MatchCase = False
+            .Apply
+        End With
+    Else
+        MsgBox "Não foi encontrada nenhuma tabela na planilha."
+    End If
 End Sub
