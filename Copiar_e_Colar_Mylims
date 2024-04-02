@@ -1,0 +1,27 @@
+Sub CopiarEColar()
+
+    Dim cel As Range
+    
+    Application.Wait (Now + TimeValue("00:00:" & Range("M3").Value))
+
+    ' Verifica se alguma célula foi selecionada
+    If TypeName(Selection) <> "Range" Then
+        MsgBox "Nenhuma célula selecionada!", vbExclamation
+        Exit Sub
+    End If
+
+    ' Loop para copiar e colar células selecionadas
+    For Each cel In Selection
+    
+        ' Copiar o valor da célula
+        cel.Copy
+        
+        ' Colar onde quer que a seleção esteja
+        Application.SendKeys "^v"
+        
+        ' Esperar 1 segundo
+        Application.Wait (Now + TimeValue("00:00:" & Range("L3").Value))
+        
+    Next cel
+
+End Sub
