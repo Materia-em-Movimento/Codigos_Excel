@@ -1,0 +1,38 @@
+Sub GerarValoresAleatoriosEAtingirMeta()
+    Dim cel As Range
+    Dim meta As Double
+    Dim valor1 As Double
+    Dim valor2 As Double
+    
+    ' Verifica se a seleção é uma única célula ou um intervalo de células
+    If TypeName(Selection) = "Range" Then
+        ' Loop através de cada célula na seleção
+        For Each cel In Selection
+            ' Define a meta para cada célula
+            meta = InputBox("Insira a meta desejada para a célula " & cel.Address & ":")
+            
+            ' Verifica se a célula não está vazia
+            If Not IsEmpty(cel) Then
+                ' Define os valores aleatórios
+                valor1 = WorksheetFunction.RandBetween(540000, 544000) / 10000
+                valor2 = WorksheetFunction.RandBetween(151000, 156000) / 10000
+                
+                ' Insere os valores nas células duas e uma à esquerda da célula atual
+                cel.Offset(0, -2).Value = valor1
+                cel.Offset(0, -3).Value = valor2
+                
+
+                ' Atingir a meta para a célula dependente
+                cel.Offset(0, 0).GoalSeek Goal:=meta, ChangingCell:=cel.Offset(0, -1)
+
+                ' Arredonda o valor da célula dependente para 4 casas decimais
+                cel.Offset(0, -1).Value = Round(cel.Offset(0, -1).Value, 4)
+
+            End If
+        Next cel
+    Else
+        MsgBox "Selecione uma célula ou um intervalo de células."
+    End If
+End Sub
+
+'By André Lemes
