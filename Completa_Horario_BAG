@@ -1,0 +1,55 @@
+Sub SomarHorarios()
+
+    Dim cel As Range
+    Dim somaHoras As Date
+    Dim intervalo As Range
+    Dim intervaloHoras As Integer
+    Dim i As Integer
+    
+    ' Definindo o intervalo selecionado pelo usuário
+    On Error Resume Next
+    Set intervalo = Selection
+    On Error GoTo 0
+    
+    ' Verifica se o intervalo foi selecionado corretamente
+    If intervalo Is Nothing Then
+        MsgBox "Nenhum intervalo selecionado. A macro será encerrada."
+        Exit Sub
+    End If
+    
+    ' Pede ao usuário para inserir o horário final desejado
+    Dim horarioFinal As Date
+    horarioFinal = TimeValue(InputBox("Insira o horário final desejado (formato HH:MM):"))
+    
+    ' Calcula o intervalo entre os horários com base no horário final
+    intervaloHoras = DateDiff("n", intervalo.Cells(1).Value, horarioFinal) / (intervalo.Count - 1)
+    
+    ' Inicializa a soma de horas com o valor da primeira célula selecionada
+    somaHoras = intervalo.Cells(1).Value
+    
+    ' Inicia a contagem de células modificadas
+    i = 1
+    
+    ' Loop através de cada célula no intervalo selecionado
+    For Each cel In intervalo
+        ' Verifica se o horário final já foi atingido
+        If i = intervalo.Count Then
+            ' Define o valor da última célula como o horário final
+            cel.Value = horarioFinal
+            Exit For
+        End If
+        
+        ' Soma o intervalo de horas ao horário atual
+        If i > 1 Then ' Não altera o valor da primeira célula
+            somaHoras = somaHoras + TimeSerial(0, intervaloHoras, 0)
+            
+            ' Define o valor da célula como o horário somado
+            cel.Value = Format(somaHoras, "HH:MM")
+        End If
+        
+        ' Incrementa a contagem de células modificadas
+        i = i + 1
+    Next cel
+    
+End Sub
+
