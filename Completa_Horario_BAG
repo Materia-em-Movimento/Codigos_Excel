@@ -1,3 +1,5 @@
+'VESÃO ANTIGA
+'------------------
 Sub SomarHorarios()
 
     Dim cel As Range
@@ -52,4 +54,74 @@ Sub SomarHorarios()
     Next cel
     
 End Sub
+
+----------------------------------------------------------------------------
+
+'VERSÃO NOVA
+
+Sub SomarHorarios()
+
+    Dim cel As Range
+    Dim somaHoras As Date
+    Dim intervalo As Range
+    Dim intervaloHoras As Integer
+    Dim i As Integer
+    Dim novoValor As Date
+    Dim ultimoDigito As Integer
+    
+    ' Definindo o intervalo selecionado pelo usuário
+    On Error Resume Next
+    Set intervalo = Selection
+    On Error GoTo 0
+    
+    ' Verifica se o intervalo foi selecionado corretamente
+    If intervalo Is Nothing Then
+        MsgBox "Nenhum intervalo selecionado. A macro será encerrada."
+        Exit Sub
+    End If
+    
+    ' Pede ao usuário para inserir o horário final desejado
+    Dim horarioFinal As Date
+    horarioFinal = timeValue(InputBox("Insira o horário final desejado (formato HH:MM):"))
+    
+    ' Calcula o intervalo entre os horários com base no horário final
+    intervaloHoras = DateDiff("n", intervalo.Cells(1).Value, horarioFinal) / (intervalo.Count - 1)
+    
+    ' Inicializa o contador de horas com o valor da primeira célula selecionada
+    novoValor = intervalo.Cells(1).Value
+    
+    ' Inicia a contagem de células modificadas
+    i = 1
+    
+    ' Loop através de cada célula no intervalo selecionado
+    For Each cel In intervalo
+        ' Verifica se o horário final já foi atingido
+        If i = intervalo.Count Then
+            ' Define o valor da última célula como o horário final
+            novoValor = horarioFinal
+        Else
+            ' Soma o intervalo de horas ao horário atual
+            If i > 1 Then ' Não altera o valor da primeira célula
+                novoValor = novoValor + TimeSerial(0, intervaloHoras, 0)
+            End If
+        End If
+        
+        ' Verifica o último dígito do horário
+        ultimoDigito = Right(Format(novoValor, "HH:MM"), 1)
+        
+        ' Aplica a lógica da fórmula corretora
+        If ultimoDigito = 0 Then
+            cel.Value = Format(novoValor, "HH:MM")
+        ElseIf ultimoDigito > 5 Then
+            cel.Value = novoValor + TimeSerial(0, 10 - ultimoDigito, 0)
+        Else
+            cel.Value = novoValor - TimeSerial(0, ultimoDigito, 0)
+        End If
+        
+        ' Incrementa a contagem de células modificadas
+        i = i + 1
+    Next cel
+    
+End Sub
+
 
