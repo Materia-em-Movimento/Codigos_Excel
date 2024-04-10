@@ -1,0 +1,24 @@
+Sub ArredondarHorario()
+
+    Dim horaAtual As Date
+    Dim minutos As Integer
+    Dim cel As Range
+    
+    ' Obtém o horário atual
+    horaAtual = Now
+    
+    ' Obtém os minutos do horário atual
+    minutos = Minute(horaAtual)
+    
+    ' Arredonda os minutos para o múltiplo de 10 mais próximo
+    minutos = (Int((minutos + 5) / 10) * 10) Mod 60
+    
+    ' Arredonda o horário para o próximo valor inteiro nos minutos
+    horaArredondada = TimeSerial(Hour(horaAtual), minutos, 0)
+    
+    ' Define a data e o horário arredondado na seleção
+    For Each cel In Selection
+        cel.Value = Date + horaArredondada
+    Next cel
+    
+End Sub
