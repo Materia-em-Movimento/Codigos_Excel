@@ -1,0 +1,34 @@
+'Não esquecer de mudar as referências!!!
+
+
+Sub Colorir_Células()
+    
+    Dim ws As Worksheet
+    Dim lastRow As Long
+    Dim rng As Range
+    Dim tableRange As Range
+    Dim cell As Range
+    Dim i As Long
+
+    ' Definir a planilha onde os dados estï¿½o localizados
+    Set ws = ThisWorkbook.Sheets("Planilha2 (7)")
+
+    ' Encontrar a ï¿½ltima linha da tabela
+    lastRow = ws.Cells(ws.Rows.count, "B").End(xlUp).row
+
+    ' Definir o intervalo dos dados
+    Set tableRange = ws.Range("B4:J" & lastRow)
+
+    ' Selecionar os dados (Ctrl + T)
+    tableRange.Select
+
+    ' Pintar linhas alternadas
+    For i = 1 To tableRange.Rows.count
+        If i Mod 2 = 0 Then
+            tableRange.Rows(i).Interior.Color = RGB(235, 235, 235) ' Cinza claro
+        Else
+            tableRange.Rows(i).Interior.ColorIndex = xlNone ' Sem cor de fundo
+        End If
+    Next i
+
+End Sub
