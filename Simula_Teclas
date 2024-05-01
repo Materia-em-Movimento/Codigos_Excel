@@ -1,0 +1,111 @@
+Private Sub Copia_e_cola_Itens_Individualmente()
+
+' Alternar para a próxima janela
+    
+    Range("A1").Select
+'    Application.Wait Now + TimeValue("00:00:01")
+    SendKeys "%{TAB}"
+    Application.Wait Now + TimeValue("00:00:01")
+
+        SendKeys "^+{RIGHT}"
+        SendKeys "^c"
+'        Application.Wait Now + TimeValue("00:00:01")
+        SendKeys "%{TAB}"
+        Application.Wait Now + TimeValue("00:00:01")
+        Range("A1").Select
+            DoEvents
+        SendKeys "^v"
+            DoEvents
+'        Application.Wait Now + TimeValue("00:00:01")
+'        SendKeys "{DOWN}"
+
+
+        SendKeys "%{TAB}"
+        Application.Wait Now + TimeValue("00:00:01")
+        SendKeys "{DOWN}"
+        SendKeys "{LEFT}"
+        SendKeys "^+{RIGHT}"
+'        Application.Wait Now + TimeValue("00:00:01")
+        SendKeys "^c"
+'        Application.Wait Now + TimeValue("00:00:01")
+        SendKeys "%{TAB}"
+        Application.Wait Now + TimeValue("00:00:01")
+        Range("A2").Select
+            DoEvents
+        SendKeys "^v"
+            DoEvents
+'        Application.Wait Now + TimeValue("00:00:01")
+'        SendKeys "{DOWN}"
+        
+
+        SendKeys "%{TAB}"
+        Application.Wait Now + TimeValue("00:00:01")
+        SendKeys "{DOWN}"
+        SendKeys "{LEFT}"
+        SendKeys "^+{RIGHT}"
+'        Application.Wait Now + TimeValue("00:00:01")
+        SendKeys "^c"
+        
+        Application.Wait Now + TimeValue("00:00:01")
+        SendKeys "%{TAB}"
+        Application.Wait Now + TimeValue("00:00:01")
+        Range("A3").Select
+            DoEvents
+        SendKeys "^v"
+            DoEvents
+'        Application.Wait Now + TimeValue("00:00:01")
+'        SendKeys "{DOWN}"
+        
+        
+        SendKeys "%{TAB}"
+        Application.Wait Now + TimeValue("00:00:01")
+        SendKeys "{DOWN}"
+        SendKeys "{LEFT}"
+        SendKeys "^+{RIGHT}"
+'        Application.Wait Now + TimeValue("00:00:01")
+        SendKeys "^c"
+        Application.Wait Now + TimeValue("00:00:01")
+        SendKeys "%{TAB}"
+        Application.Wait Now + TimeValue("00:00:01")
+        Range("A4").Select
+            DoEvents
+        SendKeys "^v"
+            DoEvents
+'        Application.Wait Now + TimeValue("00:00:01")
+'        SendKeys "{DOWN}"
+
+        
+End Sub
+
+---------------------------------------------------------------------------------
+
+Private Sub Copia_e_cola_Tudo()
+
+    'SimularTeclas
+
+    ' Alternar para a próxima janela
+    SendKeys "%{TAB}"
+    Application.Wait Now + TimeValue("00:00:01")
+    
+    ' Selecionar tudo
+    SendKeys "^a"
+    Application.Wait Now + TimeValue("00:00:01")
+    
+    ' Copiar
+    SendKeys "^c"
+    Application.Wait Now + TimeValue("00:00:01")
+    
+    ' Alternar para a próxima janela
+    SendKeys "%{TAB}"
+    'Application.Wait Now + TimeValue("00:00:01")
+    
+    Range("A1").Select
+    
+    ' Colar
+    SendKeys "^v"
+    'Application.Wait Now + TimeValue("00:00:03")
+    
+    ' Pressionar Enter
+    'SendKeys "{ENTER}"
+    
+End Sub
