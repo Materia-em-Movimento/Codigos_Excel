@@ -1,0 +1,45 @@
+Sub Criar_Amostra_Em_Massa()
+'
+' Esta macro cria uma amostra em massa preenchendo um range de células para baixo a partir de uma célula de referência.
+'
+
+    Dim ws As Worksheet
+    Dim ultimaLinha As Long
+    Dim rangeAlvo As Range
+    
+    ' Definir a planilha onde a amostra será criada
+    Set ws = ThisWorkbook.Sheets("EXP 1.0") ' Substitua "EXP 1.0" pelo nome da sua planilha
+    
+    ' Definir a célula de referência como A134
+    Dim celReferencia As Range
+    Set celReferencia = ws.Range("A134")
+    
+    ' Encontrar a última linha preenchida na coluna A e adicionar o valor de F5
+    ultimaLinha = celReferencia.End(xlUp).Row + Range("F5").Value
+    
+    ' Definir o range alvo para preencher com a amostra
+    Set rangeAlvo = ws.Range("A" & celReferencia.End(xlUp).Row & ":D" & celReferencia.End(xlUp).Row)
+    
+    ' Verificar se há dados na primeira linha para evitar erros
+    If celReferencia.End(xlUp).Row = 1 Then Exit Sub
+    
+    ' Copiar e preencher para baixo até a última linha
+    rangeAlvo.AutoFill Destination:=ws.Range("A" & celReferencia.End(xlUp).Row & ":D" & ultimaLinha), Type:=xlFillDefault
+
+End Sub
+
+'-------------------------------
+
+Sub Apaga_Tudo()
+
+Range("A2:D1340").ClearContents
+
+End Sub
+
+'-------------------------------
+
+Sub Apaga_e_Mater_1ª_linha()
+
+Range("A3:D1340").ClearContents
+
+End Sub
